@@ -1,0 +1,190 @@
+-----+DOCUMENTAÇÃO DE PROMPTS — Estilização do Currículo com CSS
+Aluno: João Pedro Carvalho Abdala
+Ferramenta de IA utilizada: Claude (Anthropic)
+
+
+=== PROMPT 1 ===
+Data: 17/08/2026
+Prompt enviado para a IA:
+"Preciso estilizar com CSS o currículo em HTML que já criei (header, nav,
+main com sections, footer). Sou estudante de Análise e Desenvolvimento de
+Sistemas e uso Java, IntelliJ IDEA, NetBeans e GitHub. Em vez de um layout
+de currículo genérico, quero uma identidade visual que tenha a ver com o
+meu mundo: algo que pareça a janela de um editor de código (IDE). Crie um
+arquivo CSS externo (css/style.css) com uma paleta de cores baseada no
+tema claro do IntelliJ (fundo branco, texto quase preto, azul para
+palavras-chave, verde para strings, cinza para comentários), e duas
+fontes: uma monoespaçada (JetBrains Mono) para títulos/elementos de
+código e uma fonte sem serifa (IBM Plex Sans) para os parágrafos."
+
+Resultado obtido:
+- Definição da paleta em variáveis CSS (:root), com --bg-shell, --bg-editor,
+  --ink, --muted, --keyword (#0033B3), --string (#067D17) e --rule.
+- Importação das fontes via @import (Google Fonts): JetBrains Mono e
+  IBM Plex Sans.
+- header#topo, main#conteudo e footer#contato estilizados como um único
+  "painel de editor" (fundo branco, bordas finas, cantos arredondados
+  apenas no topo e na base).
+
+O que mudou: a página deixou de ser texto simples e passou a ter uma
+identidade visual coerente com o tema de desenvolvimento Java.
+
+
+=== PROMPT 2 ===
+Data: 17/08/2026
+Prompt enviado para a IA:
+"Gostei da ideia! Agora transforme o meu <nav> (que tem uma <ul> com
+links para cada <section>) em uma barra de abas de arquivos, como as
+abas abertas no IntelliJ. Cada aba deve ter uma 'extensão de arquivo'
+diferente (.md, .java, .txt) de acordo com o conteúdo da seção, sem eu
+precisar alterar o HTML. Quero também um efeito hover: quando o mouse
+passar por cima do link, a cor deve mudar para o azul de destaque."
+
+Resultado obtido:
+nav#menu ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  border-bottom: 1px solid var(--rule);
+}
+
+nav#menu a {
+  font-family: var(--font-mono);
+  background: #F1F2F4;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+nav#menu li:nth-child(1) a::after { content: ".md"; }
+nav#menu li:nth-child(2) a::after { content: ".java"; }
+/* ...restante das abas... */
+
+nav#menu a:hover,
+nav#menu a:focus-visible {
+  color: var(--keyword);
+  background: var(--bg-editor);
+}
+
+O que mudou: o menu de navegação agora se parece com abas de arquivo
+abertas em um IDE, cada uma com a "extensão" certa, e ganhou o efeito
+de hover pedido — tudo via CSS, sem tocar no HTML.
+
+
+=== PROMPT 3 ===
+Data: 17/08/2026
+Prompt enviado para a IA:
+"Quero que cada <section> do meu currículo pareça uma linha numerada de
+código-fonte, com os números tipo 01, 02, 03 alinhados em uma coluna
+fixa à esquerda, separados por uma linha vertical, do jeito que aparece
+a régua de linhas em qualquer editor de código."
+
+Resultado obtido:
+main#conteudo {
+  counter-reset: linha;
+}
+
+main#conteudo > section {
+  counter-increment: linha;
+  position: relative;
+  padding-left: calc(var(--gutter-width) + 1.75rem);
+}
+
+main#conteudo > section::before {
+  content: counter(linha, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  width: var(--gutter-width);
+  text-align: right;
+  font-family: var(--font-mono);
+  color: var(--muted);
+  border-right: 1px solid var(--rule);
+}
+
+O que mudou: cada bloco de conteúdo passou a ter numeração automática
+(gerada só com CSS, via counter), reforçando a ideia de "arquivo de
+código" sem precisar adicionar nenhum elemento novo no HTML.
+
+
+=== PROMPT 4 ===
+Data: 17/08/2026
+Prompt enviado para a IA:
+"Agora quero aproveitar as tags <strong> e <em> que já uso no currículo
+para simular realce de sintaxe: <strong> deveria parecer uma
+palavra-chave (azul, em negrito) e <em> deveria parecer uma string de
+código, ou seja, com aspas e em verde — eu uso <em> exatamente nos
+status tipo 'Cursando' e 'Concluído'. Os <h2> das seções também podem
+ganhar um prefixo tipo comentário de Java (//)."
+
+Resultado obtido:
+h2::before {
+  content: "// ";
+  color: var(--keyword);
+}
+
+strong {
+  color: var(--keyword);
+  font-weight: 600;
+}
+
+em {
+  color: var(--string);
+  font-style: normal;
+  font-family: var(--font-mono);
+}
+
+em::before,
+em::after {
+  content: '"';
+  color: var(--string);
+  opacity: 0.7;
+}
+
+O que mudou: os textos em destaque do currículo (formação, cargos,
+status dos cursos) agora "conversam" com o tema geral, imitando
+realce de sintaxe de um editor Java em vez de um negrito/itálico comum.
+
+
+=== PROMPT 5 ===
+Data: 17/08/2026
+Prompt enviado para a IA:
+"Por fim, adapte esse CSS para telas de celular (a régua de linhas e as
+extensões das abas provavelmente não vão caber), garanta o foco visível
+no teclado para os links e respeite quem usa 'prefers-reduced-motion',
+já que coloquei uma animação de destaque quando o usuário clica em um
+link do menu e é levado até a seção (usando :target)."
+
+Resultado obtido:
+section:target {
+  animation: destaque 1.4s ease-out;
+}
+
+@keyframes destaque {
+  from { background-color: #EAF0FF; }
+  to   { background-color: transparent; }
+}
+
+a:focus-visible {
+  outline: 2px solid var(--keyword);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  section:target { animation: none; }
+}
+
+@media (max-width: 680px) {
+  main#conteudo > section::before { display: none; }
+  nav#menu a::after { display: none; }
+  div#linguagens, div#ferramentas,
+  div#conceitos, div#pacote-office { width: 100%; }
+}
+
+O que mudou: a página ficou responsiva (a régua de linhas e as
+extensões de arquivo somem em telas pequenas, os blocos de
+competências passam a ocupar 100% da largura), o foco de teclado ficou
+visível nos links e a animação de destaque ao navegar pelas âncoras
+respeita a preferência de "menos movimento" do usuário.
